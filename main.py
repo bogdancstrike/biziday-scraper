@@ -7,6 +7,7 @@ from time import sleep
 import datetime as dt
 from utils import convert_time_string_to_date, todayDate
 import argparse
+from classificator import categorize
 
 
 def main():
@@ -54,7 +55,8 @@ def main():
     for item in range(0, len(articlesText)):
         articleJson = {
             "text": articlesText[item].text,
-            "time": "{date}".format(date=convert_time_string_to_date(articlesTimeAgo[item].text).date())
+            "time": "{date}".format(date=convert_time_string_to_date(articlesTimeAgo[item].text).date()),
+            "category": "{category}".format(category=categorize(articlesText[item].text))
         }
         articles.append(articleJson)
 
