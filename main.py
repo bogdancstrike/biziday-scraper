@@ -1,8 +1,9 @@
+import json
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from time import sleep
-from datetime import date, time, timedelta
 import datetime as dt
 from utils import convert_time_string_to_date, todayDate
 import argparse
@@ -19,7 +20,7 @@ def main():
     parser.add_argument("-d", "--date",
                         help="In which date to show how many articles were extracted",
                         type=date_type,
-                        default=dt.datetime(2023, 4, 20, 0, 0).date(),
+                        default=dt.datetime.today().date(),
                         required=False)
     args = parser.parse_args()
 
@@ -54,6 +55,9 @@ def main():
             "time": articlesTimeAgo[item].text
         }
         articles.append(articleJson)
+
+    # Export articles to JSON file
+    export_to_file(articles)
 
     print("\nAu fost extrase in total {numar_articole} articole".format(numar_articole=len(articles)))
 
@@ -93,6 +97,10 @@ def date_type(string):
     except ValueError:
         msg = "Invalid date format: '{0}'. Expected format is 'YYYY-mm-dd'.".format(string)
         raise argparse.ArgumentTypeError(msg)
+
+def export_to_file(articles):
+    with open("articles.json", "w") as f:
+        json.dump(articles, f)
 
 if __name__ == "__main__":
     main()
