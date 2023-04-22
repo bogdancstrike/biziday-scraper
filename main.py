@@ -25,7 +25,7 @@ def main():
                         required=False)
     args = parser.parse_args()
 
-    print("Will extract about {articles_number} articles\n".format(articles_number=20*(args.scrolls+1)))
+    print("Will extract about {articles_number} articles\n".format(articles_number=20 * (args.scrolls + 1)))
 
     # Add additional options
     chrome_options = Options()
@@ -43,15 +43,19 @@ def main():
     driver.get('https://www.biziday.ro/')
     sleep(2)
 
-    finish_percentage = 100/args.scrolls
+    finish_percentage = 100 / args.scrolls
     for scroll in range(0, +args.scrolls):
         print("{finish}% articles extracted".format(finish=finish_percentage))
-        finish_percentage = finish_percentage + 100/args.scrolls
+        finish_percentage = finish_percentage + 100 / args.scrolls
         loadMoreArticles(driver)
+
+    # Save articles to list of dicts and export to JSON file
+    print("\nexport articles to JSON file")
+
+    articles = []
     articlesText = driver.find_elements(By.CLASS_NAME, 'post-title')
     articlesTimeAgo = driver.find_elements(By.CLASS_NAME, 'timeago')
 
-    articles = []
     for item in range(0, len(articlesText)):
         articleJson = {
             "text": articlesText[item].text,
@@ -59,9 +63,6 @@ def main():
             "category": "{category}".format(category=categorize(articlesText[item].text))
         }
         articles.append(articleJson)
-
-    # Export articles to JSON file
-    print("\nexport articles to JSON file")
     export_to_file(articles)
 
     print("\nA total of {numar_articole} articles were extracted".format(numar_articole=len(articles)))
@@ -78,11 +79,11 @@ def main():
 def numberOfArticlesToday(articles):
     number = 0
     for article in articles:
-        # articleDate = convert_time_string_to_date(article.get("time")).date()
         articleDate = dt.datetime.strptime(article.get("time"), '%Y-%m-%d').date()
         if articleDate == todayDate():
             number = number + 1
     return number
+
 
 def numberOfArticlesOn(date, articles):
     number = 0
@@ -92,10 +93,12 @@ def numberOfArticlesOn(date, articles):
             number = number + 1
     return number
 
+
 def loadMoreArticles(driver):
     loadMoreButton = driver.find_element(By.ID, 'more')
     loadMoreButton.click()
     sleep(3)
+
 
 def date_type(string):
     try:
@@ -104,9 +107,11 @@ def date_type(string):
         msg = "Invalid date format: '{0}'. Expected format is 'YYYY-mm-dd'.".format(string)
         raise argparse.ArgumentTypeError(msg)
 
+
 def export_to_file(articles):
     with open("articles.json", "w") as f:
         json.dump(articles, f)
+
 
 if __name__ == "__main__":
     main()
