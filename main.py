@@ -52,19 +52,12 @@ def main():
     for item in range(0, len(articlesText)):
         articleJson = {
             "text": articlesText[item].text,
-            "time": articlesTimeAgo[item].text
+            "time": "{date}".format(date=convert_time_string_to_date(articlesTimeAgo[item].text).date())
         }
         articles.append(articleJson)
 
     # Export articles to JSON file
-    beautify_articles = []
-    for item in range(0, len(articles)):
-        articleJson = {
-            "text": articlesText[item].text,
-            "time": "{date}".format(date=convert_time_string_to_date(articlesTimeAgo[item].text).date())
-        }
-        beautify_articles.append(articleJson)
-    export_to_file(beautify_articles)
+    export_to_file(articles)
 
     print("\nAu fost extrase in total {numar_articole} articole".format(numar_articole=len(articles)))
 
@@ -80,7 +73,8 @@ def main():
 def numberOfArticlesToday(articles):
     number = 0
     for article in articles:
-        articleDate = convert_time_string_to_date(article.get("time")).date()
+        # articleDate = convert_time_string_to_date(article.get("time")).date()
+        articleDate = dt.datetime.strptime(article.get("time"), '%Y-%m-%d').date()
         if articleDate == todayDate():
             number = number + 1
     return number
@@ -88,7 +82,7 @@ def numberOfArticlesToday(articles):
 def numberOfArticlesOn(date, articles):
     number = 0
     for article in articles:
-        articleDate = convert_time_string_to_date(article.get("time")).date()
+        articleDate = dt.datetime.strptime(article.get("time"), '%Y-%m-%d').date()
         if articleDate == date:
             number = number + 1
     return number
