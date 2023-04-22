@@ -24,8 +24,7 @@ def main():
                         required=False)
     args = parser.parse_args()
 
-    print("scrolls: ", args.scrolls)
-    print("date: ", args.date)
+    print("Will extract about {articles_number} articles\n".format(articles_number=20*(args.scrolls+1)))
 
     # Add additional options
     chrome_options = Options()
@@ -43,7 +42,10 @@ def main():
     driver.get('https://www.biziday.ro/')
     sleep(2)
 
-    for _ in range(0, +args.scrolls):
+    finish_percentage = 100/args.scrolls
+    for scroll in range(0, +args.scrolls):
+        print("{finish}% articles extracted".format(finish=finish_percentage))
+        finish_percentage = finish_percentage + 100/args.scrolls
         loadMoreArticles(driver)
     articlesText = driver.find_elements(By.CLASS_NAME, 'post-title')
     articlesTimeAgo = driver.find_elements(By.CLASS_NAME, 'timeago')
@@ -57,13 +59,14 @@ def main():
         articles.append(articleJson)
 
     # Export articles to JSON file
+    print("\nexport articles to JSON file")
     export_to_file(articles)
 
-    print("\nAu fost extrase in total {numar_articole} articole".format(numar_articole=len(articles)))
+    print("\nA total of {numar_articole} articles were extracted".format(numar_articole=len(articles)))
 
-    print("\nArticole astazi: {articole}".format(articole=numberOfArticlesToday(articles)))
+    print("\nArticles today: {articole}".format(articole=numberOfArticlesToday(articles)))
 
-    print("Articole in data de {customDate}: {articole}".format(
+    print("Articles on {customDate}: {articole}".format(
         customDate=args.date,
         articole=numberOfArticlesOn(args.date, articles)))
 
