@@ -13,7 +13,7 @@ chrome_options.add_argument(r"--user-data-dir=C:\\Users\\[YOUR_USER]\\AppData\\L
 
 ### ARGS
 
-- `-s` or `--scrolls` - optional parameter - how many scrolls to load (how many times to press "Load More Articles) button. Default is `2`
+- `-s` or `--scrolls` - optional parameter - how many scrolls to load (how many times to press "Load More Articles button). Default is `2`
 - `-d` or `--date` - optional parameter - it will show as output the number of articles scraped in that date. Format is `YYYY-mm-dd` (example `2023-04-22`). Default is `today`
 
 ## RUN
