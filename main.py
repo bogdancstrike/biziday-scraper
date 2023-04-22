@@ -57,7 +57,14 @@ def main():
         articles.append(articleJson)
 
     # Export articles to JSON file
-    export_to_file(articles)
+    beautify_articles = []
+    for item in range(0, len(articles)):
+        articleJson = {
+            "text": articlesText[item].text,
+            "time": "{date}".format(date=convert_time_string_to_date(articlesTimeAgo[item].text).date())
+        }
+        beautify_articles.append(articleJson)
+    export_to_file(beautify_articles)
 
     print("\nAu fost extrase in total {numar_articole} articole".format(numar_articole=len(articles)))
 
